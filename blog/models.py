@@ -9,6 +9,6 @@ class Project(models.Model):
 class Log(models.Model):
     title = models.CharField(max_length=60)
     project = models.ForeignKey(Project, null=False)
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
     question = models.TextField(max_length=1000, null=True)
     content = models.TextField(max_length=15000)
