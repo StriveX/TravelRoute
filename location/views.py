@@ -7,7 +7,7 @@ from .models import Location
 from .serializers import LocationSerializer
 
 def location(request, location_id):
-    return render(request, 'location.html', {'id':location_id})
+    return render(request, 'main.html', {'id':location_id})
 
 class LocationList(generics.ListCreateAPIView):
 

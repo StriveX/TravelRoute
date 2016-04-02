@@ -13,3 +13,6 @@ class Location(models.Model):
     address = models.CharField(max_length=80)
     description = models.CharField(max_length=255, null=True, blank=True)
     owner = models.ForeignKey(User, null=False)
+
+    def __unicode__(self):
+        return self.name
