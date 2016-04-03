@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.map, name='index'),
+    url(r'^load_locations/$', views.load_locations, name='add_location'),
+    url(r'^add_location/$', views.add_location, name='add_location'),
     url(r'^(?P<location_id>)[0-9]+/$', views.location, name='location_detail'),
     url(r'^api/$', views.LocationList.as_view()),
     url(r'^api/(?P<pk>[0-9]+)/$', views.LocationDetail.as_view()),
