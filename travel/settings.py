@@ -134,3 +134,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+# User account system
+
+LOGIN_REDIRECT_URL = '/location/'
