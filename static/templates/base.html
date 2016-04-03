@@ -7,9 +7,10 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <meta name="description" content="">
         <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="../../favicon.ico">
 
-        <title>Static Top Navbar Example for Bootstrap</title>
+        <title>{% block title %}{% endblock %}</title>
 
         {% load staticfiles %}
 
@@ -20,7 +21,8 @@
 {#        <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">#}
             
         <!-- Custom styles for this template -->
-        <link rel="stylesheet" type="text/css" href="{% static 'build/css/customize/navbar-static-top.css' %}" />
+        {% block stylesheet %}
+        {% endblock %}
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -29,10 +31,10 @@
         <![endif]-->
     </head>
 
-    <body style="min-height:2000px">
+    <body>
 
         <!-- Static navbar -->
-        <nav class="navbar navbar-default" style="margin-bottom:19px">
+        <nav class="navbar navbar-inverse navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,21 +64,30 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="../navbar/">Default</a></li>
+                        <li>
+                            <form class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="search-place-input" placeholder="Find a place">
+                                </div>
+                                <input type="button" class="btn btn-default" value="Search" onclick="searchPlace()"/>
+                            </form>
+                        </li>
                         <li class="active"><a href="./">Static top <span class="sr-only">(current)</span></a></li>
-                        <li><a href="../navbar-fixed-top/">Fixed top</a></li>
                     </ul>
-                </div><!--/.nav-collapse -->
+                </div>
             </div>
         </nav>
 
 
         <div class="container">
 
-            {% block content %}
-            {% endblock %}
+        {% block content %}
+        {% endblock %}
 
         </div> <!-- /container -->
+
+        {% block javascript %}
+        {% endblock %}
 
 
         <!-- Bootstrap core JavaScript

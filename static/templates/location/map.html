@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'build/css/customize/maps.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+    <div id="background_map"></div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="placeName">New place</h4>
+                    </div>
+                        <div class="modal-body">
+
+                            <form class="form-horizontal">
+                                <div class="form-group" style="display: none">
+                                    <label for="inputLat" class="col-sm-2 control-label">Latitude</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputLat3" placeholder="Latitude">
+                                    </div>
+                                </div>
+                                <div class="form-group"  style="display: none">
+                                    <label for="inputLng" class="col-sm-2 control-label">Longitude</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputLng3" placeholder="Longitude">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputDescription3" class="col-sm-2 control-label">Description</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" rows="3" id="inputDescription3" placeholder="Description"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save_place">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCAncn5gnnt5DSJfAd2D4NjO5o3BOS2K-w"></script>
+    <script src="{% static 'build/js/location/background_map.js' %}"></script>
+    <script src="{% static 'build/js/location/search_place.js' %}"></script>
+    <script src="{% static 'build/js/location/page_related.js' %}"></script>
+{% endblock %}

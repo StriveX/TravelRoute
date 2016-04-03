@@ -6,6 +6,9 @@ from rest_framework import status, generics
 from .models import Location
 from .serializers import LocationSerializer
 
+def map(request):
+    return render(request, 'location/map.html')
+
 def location(request, location_id):
     return render(request, 'main.html', {'id':location_id})
 
