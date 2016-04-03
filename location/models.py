@@ -14,10 +14,12 @@ class Location(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     owner = models.ForeignKey(User, null=False)
 
+
 class Cluster(models.Model):
     level = models.PositiveSmallIntegerField(null=False)
     center_lat = models.DecimalField(max_digits=10, decimal_places=6)
     center_lng = models.DecimalField(max_digits=10, decimal_places=6)
     num_children = models.PositiveIntegerField(default=0)
 
-# class Cluster(Cluster):
+    def __unicode__(self):
+        return self.name

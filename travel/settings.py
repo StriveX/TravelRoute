@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "static/template"),
+            os.path.join(BASE_DIR, "static/templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,6 +129,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+# User account system
+
+LOGIN_REDIRECT_URL = '/location/'
