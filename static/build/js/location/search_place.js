@@ -3,7 +3,6 @@
  */
 
 var geocoder = new google.maps.Geocoder();
-var markers;
 
 $("#search-place-input").keyup(function(event){
     if(event.keyCode == 13){

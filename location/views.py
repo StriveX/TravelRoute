@@ -10,8 +10,11 @@ from .serializers import LocationSerializer
 def map(request):
     return render(request, 'location/map.html')
 
+##########################################################################################
+## Location
 def load_locations(request):
     locations = Location.objects.all()
+    return locations
 
 @login_required
 def add_location(request):
@@ -52,3 +55,9 @@ class LocationList(generics.ListCreateAPIView):
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
+##########################################################################################
+## Route
+
+def add_route(request):
+    pass

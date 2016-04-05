@@ -1,5 +1,18 @@
 var map;
-var iconPath = '../static/build/images/';
+var markers = [];
+var selected_markers = [];
+var iconBase = '../static/build/images/';
+var icons = {
+  default: {
+    icon: iconBase + 'map_marker.png'
+  },
+  unselect: {
+    icon: iconBase + 'library_maps.png'
+  },
+  info: {
+    icon: iconBase + 'info-i_maps.png'
+  }
+};
 
 function loadPlaces(map) {
     var bounds = map.getBounds();
@@ -14,8 +27,19 @@ function loadPlaces(map) {
                 var marker = new google.maps.Marker({
                     map: map,
                     position: position,
-                    icon: iconPath + 'map_marker.png'
+                    icon: iconBase + 'map_marker.png'
                 });
+
+                markers.push(marker);
+
+                google.maps.event.addListener(markers[i], "click", function (e) {
+                    var infoBox = new InfoBox({
+                        latlng: this.getPosition(),
+                        map: map,
+                        //content: this.content
+                    });
+                });
+
             });
         },
         error : function(xhr,errmsg,err) {
@@ -46,6 +70,28 @@ function showGoogleMaps() {
             map.setCenter(pos);
         });
     }
+
+    map.enableKeyDragZoom({
+        paneStyle: {
+          backgroundColor: "gray",
+          opacity: 0.2
+        }
+    });
+    var dz = map.getDragZoomObject();
+    google.maps.event.addListener(dz, 'dragstart', function() {
+           // do things
+    });
+    google.maps.event.addListener(dz, 'dragend', function(bnds) {
+        console.log(bnds);
+        for (var i=0; i < markers.length; i++)
+        {
+            if (bnds.contains(markers[i].getPosition()))
+            {
+                var selected_marker = markers[i];
+                selected_markers.push(selected_marker);
+            }
+        }
+    });
 
     loadPlaces(map);
     google.maps.event.addListener(map, 'idle', function(ev){

@@ -23,3 +23,17 @@ class Cluster(models.Model):
 
     def __unicode__(self):
         return self.name
+
+# class Route(models.Model):
+#
+#     # 90.00 = 3x3x4x5x5x10
+#     LEVEL_ONE = 10
+#     LEVEL_TWO = 5
+#     LEVEL_THREE = 5
+#     LEVEL_FOUR = 4
+#     LEVEL_FIVE = 3
+#     LEVEL_SIX = 3
+#
+#     owner = models.ForeignKey(User)
+#     locations = models.ManyToManyField(Location)
+#     members = models.ManyToManyField(User)
