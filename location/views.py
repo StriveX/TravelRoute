@@ -4,8 +4,13 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, generics
-from .models import Location
+from .models import Location, Locations
 from .serializers import LocationSerializer
+
+from mongoengine import *
+
+connect("travel")
+
 
 def map(request):
     return render(request, 'location/map.html')
@@ -14,6 +19,9 @@ def map(request):
 ## Location
 def load_locations(request):
     locations = Location.objects.all()
+    l = Locations(locations=locations)
+    print l
+    l.save()
     return locations
 
 @login_required

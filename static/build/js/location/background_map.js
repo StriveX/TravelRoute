@@ -17,7 +17,7 @@ var icons = {
 function loadPlaces(map) {
     var bounds = map.getBounds();
     $.ajax({
-        url : "api/",
+        url : "load_locations",
         type : "GET",
         data: {bounds: bounds},
         success : function(json) {
