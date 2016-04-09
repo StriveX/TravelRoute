@@ -20,23 +20,42 @@ def map(request):
 ##########################################################################################
 # Location
 
-@login_required
 def create_location(request):
     if request.method == 'POST':
         location_name = request.POST.get('name')
         latitude = request.POST.get('lat')
         longitude = request.POST.get('lng')
         address = request.POST.get('address')
-
+        placeId = request.POST.get('placeId')
         new_location = Location(name=location_name,
                                 latitude=latitude,
                                 longitude=longitude,
-                                address=address)
-        new_location.save()
+                                address=address).save()
+        return new_location
+
+def create_place(request):
+    if request.method == 'POST':
+        try:
+            user = request.user
+            alias = request.POST.get('alias')
+            placeId = request.POST.get('placeId')
+            description = request.POST.get('description')
+
+            new_place = Place(alias=alias, description=description, owner=user)
+            corresponding_location = Location.objects(placeId=placeId)
+            if not corresponding_location:
+                corresponding_location = create_location(request)
+            new_place.location = corresponding_location
+
+            new_place.save()
+            return JsonResponse({"result":"Create new place successful."})
+        except:
+            return JsonResponse({"error":"Create new place failed."})
 
 
-def load_locations(request):
+def load_places(request):
     bound = request.bound                   # TODO
+    user = request.user
     locations = Location.objects(latlng__get_within_box=bound)
     return JsonResponse({"result": locations})
 

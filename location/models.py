@@ -27,17 +27,27 @@ class Locations(Document):
     locations = ListField(Location)
 
 
-class Cluster(models.Model):
+ZOOM_LEVEL = [
+    {"level":1, "degree":"1"},
+    {"level":2, "degree":"3"},
+    {"level":3, "degree":"9"},
+    {"level":4, "degree":"36"},
+    {"level":5, "degree":"180"},
+    {"level":6, "degree":"900"}
+]
+
+
+class Cluster(Document):
     level = models.PositiveSmallIntegerField(null=False)
-    # center_lat = models.DecimalField(max_digits=10, decimal_places=6)
-    # center_lng = models.DecimalField(max_digits=10, decimal_places=6)
     center_lat = DecimalField(precision=6, max_value=90)
     center_lng = DecimalField(precision=6, max_value=180)
     center_latlng = GeoPointField()
     num_children = IntField()
 
     def __unicode__(self):
-        return self.name
+        return self.level
+
+    meta = {'allow_inheritance': True}
 
 
 class LeafCluster(Cluster):
