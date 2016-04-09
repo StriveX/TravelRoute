@@ -8,7 +8,7 @@
 
 $('#save_place').on('click', function() {
     $.ajax({
-        url : "add_location/",
+        url : "create_location/",
         type : "POST",
         data : $('#add-location-form').serialize(),
         success : function(json) {

@@ -4,8 +4,10 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, generics
-from .models import Location, Locations
+from .models import *
 from .serializers import LocationSerializer
+
+from django.http import JsonResponse
 
 from mongoengine import *
 
@@ -16,33 +18,32 @@ def map(request):
     return render(request, 'location/map.html')
 
 ##########################################################################################
-## Location
-def load_locations(request):
-    locations = Location.objects.all()
-    l = Locations(locations=locations)
-    print l
-    l.save()
-    return locations
+# Location
 
 @login_required
-def add_location(request):
+def create_location(request):
     if request.method == 'POST':
         location_name = request.POST.get('name')
         latitude = request.POST.get('lat')
         longitude = request.POST.get('lng')
         address = request.POST.get('address')
-        description = request.POST.get('description')
-        print request.POST, latitude, longitude
 
-        location = Location(name=location_name,
-                            latitude=latitude,
-                            longitude=longitude,
-                            address=address,
-                            description=description)
-        location.save()
+        new_location = Location(name=location_name,
+                                latitude=latitude,
+                                longitude=longitude,
+                                address=address)
+        new_location.save()
+
+
+def load_locations(request):
+    bound = request.bound                   # TODO
+    locations = Location.objects(latlng__get_within_box=bound)
+    return JsonResponse({"result": locations})
+
 
 def location(request, location_id):
     return render(request, 'main.html', {'id':location_id})
+
 
 class LocationList(generics.ListCreateAPIView):
 
@@ -60,12 +61,28 @@ class LocationList(generics.ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
 ##########################################################################################
-## Route
+# Route
 
-def add_route(request):
-    pass
+
+def create_route(request):
+    if request.method == 'POST':
+        route_name = request.POST.get('name')
+        require_auto_route = request.POST.get('auto')
+        children_ids = request.POST.get('children_ids') # list
+        new_route = Route(name=route_name)
+        new_route.children = Place.objects(location__id__in=children_ids)
+        if require_auto_route:
+            calculate_route(new_route.children)
+        new_route.save()
+
+
+def load_route(request):
+    route_id = request.route_id
+    route = Route._object(_id=route_id)
+    return JsonResponse(route)
