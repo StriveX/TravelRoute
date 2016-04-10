@@ -111,6 +111,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# MONGOENGINE_USER_DOCUMENT = 'mongoengine.django.auth.User'
+# AUTH_USER_MODEL = 'mongo_auth.MongoUser'
+# SESSION_ENGINE = 'mongoengine.django.sessions'
+# AUTHENTICATION_BACKENDS = (
+#     'mongoengine.django.auth.MongoEngineBackend',
+# )
+#
+# import mongoengine
+# mongoengine.connect('travel')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from .models import *
 from .serializers import LocationSerializer
+from .utils import calculate_route_wrapper
 
 from django.http import JsonResponse
 
@@ -20,6 +21,7 @@ def map(request):
 ##########################################################################################
 # Location
 
+
 def create_location(request):
     if request.method == 'POST':
         location_name = request.POST.get('name')
@@ -32,6 +34,7 @@ def create_location(request):
                                 longitude=longitude,
                                 address=address).save()
         return new_location
+
 
 def create_place(request):
     if request.method == 'POST':
@@ -94,10 +97,15 @@ def create_route(request):
         route_name = request.POST.get('name')
         require_auto_route = request.POST.get('auto')
         children_ids = request.POST.get('children_ids') # list
+
+        locations = Place.objects(id__in=children_ids).only('location')
+        points = Location.objects(id__in=location_ids).only('latlng')
+
         new_route = Route(name=route_name)
         new_route.children = Place.objects(location__id__in=children_ids)
         if require_auto_route:
-            calculate_route(new_route.children)
+            geo_tree = calculate_route_wrapper(points)
+            new_route.path = geo_tree
         new_route.save()
 
 
