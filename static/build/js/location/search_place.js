@@ -19,8 +19,9 @@ function searchPlace() {
             var marker = new google.maps.Marker({
                 map: map,
                 position: location,
-                icon: iconPath + 'map_marker_blue.png'
+                icon: iconBase + 'map_marker_blue.png'
             });
+            searched_markers = marker;
             if (results[0].geometry.viewport) {
                 map.fitBounds(results[0].geometry.viewport);
             }
@@ -31,10 +32,12 @@ function searchPlace() {
             });
             infowindow.open(map, marker);
 
+            $('#placeName').html(results[0].address_components[0].long_name)
+
             $('#inputName').val(results[0].address_components[0].long_name);
             $('#inputLat3').val(location.lat);
             $('#inputLng3').val(location.lng);
-            $('#inputAddr').val(results[0].searchPlace);
+            $('#inputAddr').val(results[0].formatted_address);
             $('#inputPlaceId').val(results[0].place_id);
 
         } else {

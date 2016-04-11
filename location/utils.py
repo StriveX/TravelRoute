@@ -42,43 +42,69 @@ class DictMinHeap:
         return min_val
 
 
-def calc_distance(pointA, pointB):
-    return hypot(pointA[0] - pointB[0], pointA[1] - pointB[1])
+def calc_distance(point_a, point_b):
+    return hypot(point_a[0] - point_b[0], point_a[1] - point_b[1])
 
 
-def insert_into_geo_tree(point, geo_tree_root, level):
+def update_point_avg(old_avg, num, new_value):
+    x = round((old_avg[0] * (num - 1) + new_value[0]) / num, 6)
+    y = round((old_avg[1] * (num - 1) + new_value[1]) / num, 6)
+    result = (x, y)
+    print old_avg, num, new_value, result
+    return result
+
+
+def insert_into_geo_tree(location, geo_tree_root, level):
     level -= 1
+    geo_tree_root.num_locations += 1
+    update_center = update_point_avg(geo_tree_root.center_latlng,
+                                     geo_tree_root.num_locations,
+                                     location.location.latlng)
+    geo_tree_root.center_latlng = update_center
     if level == 0:
-        geo_tree_root.children.append(point)
+        geo_tree_root.children.append(location)
         geo_tree_root.num_children += 1
     else:
+        cur_cluster = NodeCluster if level > 1 else LeafCluster
         if geo_tree_root.num_children == 0:
-            new_cluster = Cluster(center_latlng=point, level=level, num_children=0)
-            geo_tree_root.locations.append(new_cluster)
+            new_cluster = cur_cluster(center_latlng=location.location.latlng,
+                                      level=level,
+                                      num_children=0,
+                                      num_locations=0)
+            geo_tree_root.children.append(new_cluster)
+
             geo_tree_root.num_children += 1
-            insert_into_geo_tree(point, new_cluster, level)
+            insert_into_geo_tree(location, new_cluster, level)
         else:
             min_dist = float('Inf')
             nearest_child = None
             for child_tree in geo_tree_root.children:
-                local_dist = calc_distance(child_tree.center_latlng, point)
-                if local_dist < min_dist and local_dist < ZOOM_LEVEL[level]:
+                local_dist = calc_distance(child_tree.center_latlng, location.location.latlng)
+                if local_dist < min_dist and local_dist < ZOOM_LEVEL[level]["degree"]:
                     min_dist = local_dist
                     nearest_child = child_tree
             if nearest_child:
-                insert_into_geo_tree(point, nearest_child, level)
+                insert_into_geo_tree(location, nearest_child, level)
             else:
-                new_cluster = Cluster(center_latlng=point, level=level, num_children=0)
-                geo_tree_root.locations.append(new_cluster)
+                new_cluster = cur_cluster(center_latlng=location.location.latlng,
+                                          level=level,
+                                          num_children=0,
+                                          num_locations=0)
+                geo_tree_root.children.append(new_cluster)
                 geo_tree_root.num_children += 1
-                insert_into_geo_tree(point, new_cluster, level)
+                insert_into_geo_tree(location, new_cluster, level)
 
 
-def build_geo_tree(points):
-    geo_tree = Cluster(center_latlng=points[0], level=6, num_children=0)
-    insert_into_geo_tree(points[0], geo_tree, 6)
-    for point in points[1:]:
-        insert_into_geo_tree(point, geo_tree, 6)
+def build_geo_tree(locations):
+    geo_tree = NodeCluster(center_latlng=locations[0].location.latlng,
+                           level=6,
+                           num_children=0,
+                           num_locations=0)
+    for location in locations:
+        try:
+            insert_into_geo_tree(location, geo_tree, 6)
+        except Exception as e:
+            print type(e), e.args
     return geo_tree
 
 
@@ -163,13 +189,12 @@ def find_shortest_path_wrapper(geo_tree):
         find_shortest_path_wrapper(local_child_child)
 
 
-def calculate_route_wrapper(places):
+def calculate_route_wrapper(locations):
     """
     This function is toppest function called by views.py
     :param places: Place object, need get corresponding Location, places[0] is begin point
     :return:
     """
-    norm_points = [place for place in places]
-    geo_tree = build_geo_tree(norm_points)
+    geo_tree = build_geo_tree(locations)
     find_shortest_path_wrapper(geo_tree)
     return geo_tree

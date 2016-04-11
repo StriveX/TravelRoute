@@ -8,15 +8,21 @@
 
 $('#save_place').on('click', function() {
     $.ajax({
-        url : "create_location/",
+        url : "create_place/",
         type : "POST",
         data : $('#add-location-form').serialize(),
         success : function(json) {
             $('#post-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
+            searched_markers.setMap(null);
+            var latlng = json.result
+            var marker = new google.maps.Marker({
+                map: map,
+                position: {lat: latlng[0], lng: latlng[1]},
+                icon: iconBase + 'map_marker.png'
+            });
+            markers.push(marker);
         },
-
         // handle a non-successful response
         error : function(xhr,errmsg,err) {
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+

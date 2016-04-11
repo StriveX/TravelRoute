@@ -1,5 +1,6 @@
 var map;
 var markers = [];
+var searched_markers;
 var selected_markers = [];
 var iconBase = '../static/build/images/';
 var icons = {
@@ -14,18 +15,24 @@ var icons = {
   }
 };
 
-function loadPlaces(map) {
+function loadPlaces() {
     var bounds = map.getBounds();
+    console.log(bounds);
+    var ne = bounds.getNorthEast();
+    var sw = bounds.getSouthWest();
     $.ajax({
-        url : "load_locations",
+        url : "load_places?n=" + ne.lat() + "&e=" + ne.lng() + "&s=" + sw.lat() + "&w=" + sw.lng(),
         type : "GET",
-        data: {bounds: bounds},
+        //data: {bounds: bounds},
         success : function(json) {
+            console.log(typeof json);
             $.each(json, function(i, val) {
-                var position = {lat: Number(val.latitude), lng: Number(val.longitude)};
+                var latlng = val.latlng;
+                var position = {lat: latlng[0], lng: latlng[1]};
                 console.log(position);
                 var marker = new google.maps.Marker({
                     map: map,
+                    id: val.id,
                     position: position,
                     icon: iconBase + 'map_marker.png'
                 });
@@ -93,10 +100,7 @@ function showGoogleMaps() {
         }
     });
 
-    loadPlaces(map);
-    google.maps.event.addListener(map, 'idle', function(ev){
-
-    });
+    google.maps.event.addListener(map, 'idle', loadPlaces);
 }
 
 google.maps.event.addDomListener(window, 'load', showGoogleMaps);
