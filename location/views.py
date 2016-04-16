@@ -52,7 +52,7 @@ def create_place(request):
                 corresponding_location = create_location(request)
             new_place.location = corresponding_location
             new_place.save()
-            return JsonResponse({"result": corresponding_location.latlng})
+            return JsonResponse({"latlng": corresponding_location.latlng, "place_id": str(new_place.id)})
         except Exception as e:
             print e.args, e
             return JsonResponse({"error": "Create new place failed."})
@@ -68,7 +68,6 @@ def load_places(request):
             ne = (float(n), float(e)); sw = (float(s), float(w))
             # user = request.user
             locations = Location.objects(latlng__within_box=[sw, ne]).to_json()
-            print locations
             return JsonResponse(loads(locations), safe=False)
         except Exception as e:
             print e

@@ -14,16 +14,17 @@ $('#save_place').on('click', function() {
         success : function(json) {
             $('#post-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
-            searched_markers.setMap(null);
-            var latlng = json.result
+            focused_markers.setMap(null);
+            var latlng = json.latlng;
+            var place_id = json.place_id;
             var marker = new google.maps.Marker({
                 map: map,
+                place_id: place_id,
                 position: {lat: latlng[0], lng: latlng[1]},
-                icon: iconBase + 'map_marker.png'
+                icon: iconBase + 'Marker_balck.png'
             });
-            markers.push(marker);
+            markers.push(unselected_marker);
         },
-        // handle a non-successful response
         error : function(xhr,errmsg,err) {
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
@@ -31,6 +32,43 @@ $('#save_place').on('click', function() {
         }
     });
 });
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i -= 1) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
+
+function process_route(best_route_pre_process) {
+    return best_route_pre_process.map(function(item, index) {
+        return {lat: item[0], lng: item[1]};
+    });
+}
+
+$('#save_route').on('click', function() {
+    var points = selected_markers.map(function(item, index) {
+        return [item.position.lat(), item.position.lng()];
+    });
+    shuffle(points);
+    var best_route_pre_process = init_graph(points);
+    var best_route_post_process = process_route(best_route_pre_process);
+    if (route) {
+        route.setMap(null);
+    }
+    route = new google.maps.Polyline({
+        path: best_route_post_process,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+    route.setMap(map);
+});
+
 
 $('#my_modal').on('show.bs.modal', function(e) {
     var bookId = $(e.relatedTarget).data('book-id');

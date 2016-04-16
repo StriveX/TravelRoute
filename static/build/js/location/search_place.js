@@ -12,6 +12,7 @@ $("#search-place-input").keyup(function(event){
 
 function searchPlace() {
     var address = document.getElementById("search-place-input").value;
+    if (!address) return;
     geocoder.geocode( { 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             var location = results[0].geometry.location;
@@ -21,7 +22,7 @@ function searchPlace() {
                 position: location,
                 icon: iconBase + 'map_marker_blue.png'
             });
-            searched_markers = marker;
+            focused_markers = unselected_marker;
             if (results[0].geometry.viewport) {
                 map.fitBounds(results[0].geometry.viewport);
             }
@@ -30,7 +31,7 @@ function searchPlace() {
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
             });
-            infowindow.open(map, marker);
+            infowindow.open(map, unselected_marker);
 
             $('#placeName').html(results[0].address_components[0].long_name)
 

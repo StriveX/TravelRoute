@@ -1,19 +1,24 @@
 var map;
-var markers = [];
-var searched_markers;
-var selected_markers = [];
+var route;
+var markers = [];                         // all general markers
+var focused_markers = [];                 // unselected_marker showing info window, only one allowed
+var selected_markers = [];                // markers in one route
 var iconBase = '../static/build/images/';
-var icons = {
-  default: {
-    icon: iconBase + 'map_marker.png'
-  },
-  unselect: {
-    icon: iconBase + 'library_maps.png'
-  },
-  info: {
-    icon: iconBase + 'info-i_maps.png'
-  }
-};
+
+function addMark(p_id, position, icon, group) {
+    var marker = new google.maps.Marker({
+        map: map,
+        p_id: p_id,
+        position: position,
+        icon: iconBase + icon
+    });
+    group.push(marker);
+    return marker
+}
+
+function add_place_to_route() {
+
+}
 
 function loadPlaces() {
     var bounds = map.getBounds();
@@ -23,34 +28,27 @@ function loadPlaces() {
     $.ajax({
         url : "load_places?n=" + ne.lat() + "&e=" + ne.lng() + "&s=" + sw.lat() + "&w=" + sw.lng(),
         type : "GET",
-        //data: {bounds: bounds},
         success : function(json) {
-            console.log(typeof json);
             $.each(json, function(i, val) {
                 var latlng = val.latlng;
                 var position = {lat: latlng[0], lng: latlng[1]};
-                console.log(position);
+
                 var marker = new google.maps.Marker({
                     map: map,
-                    id: val.id,
+                    p_id: val.id,
                     position: position,
-                    icon: iconBase + 'map_marker.png'
+                    icon: iconBase + 'Marker_balck.png'
                 });
-
                 markers.push(marker);
 
-                google.maps.event.addListener(markers[i], "click", function (e) {
-                    var infoBox = new InfoBox({
-                        latlng: this.getPosition(),
-                        map: map,
-                        //content: this.content
+                google.maps.event.addListener(unselected_marker, "click", function (e) {
+                    unselected_marker.setIcon('Marker_Filled_balck.png');
+                    var selected_marker = addMark(val.id, position, 'Marker_Filled_balck.png', selected_markers);
+                        selected_marker.setMap(null);
                     });
                 });
-
-            });
         },
         error : function(xhr,errmsg,err) {
-
         }
     });
 }
@@ -59,7 +57,7 @@ function showGoogleMaps() {
 
     var mapOptions = {
         zoom: 12, // initialize zoom level - the max value is 21
-        streetViewControl: false, // hide the yellow Street View pegman
+        streetViewControl: false,
         scaleControl: true, // allow users to zoom the Google Map
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: {lat: 37.7749295, lng: -122.41941550000001}
@@ -99,7 +97,6 @@ function showGoogleMaps() {
             }
         }
     });
-
     google.maps.event.addListener(map, 'idle', loadPlaces);
 }
 
