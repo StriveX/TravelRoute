@@ -80,3 +80,5 @@ $('#my_modal').on('show.bs.modal', function(e) {
 //    $('#post-text').val(''); // remove the value from the input
 //    $("#talk").prepend("<li><strong>"+json.text+"</strong> - <em> "+json.author+"</em> - <span> "+json.created+"</span></li>");
 //},
+
+function create_route() {}

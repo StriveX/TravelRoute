@@ -1,5 +1,6 @@
 from json import loads
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAdminUser
@@ -9,14 +10,21 @@ from .models import *
 from .serializers import LocationSerializer
 from .utils import calculate_route_wrapper
 
-from django.http import JsonResponse
 from mongoengine import *
 
 connect("travel")
 
 
 def index(request):
-    return render(request, 'location/map.html')
+    user = request.user
+    context = {'user': user}
+    return render(request, 'location/map.html', context)
+
+
+def dashboard(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, 'location/dashboard.html', context)
 
 ##########################################################################################
 # Location
@@ -24,6 +32,7 @@ def index(request):
 
 def create_location(request):
     if request.method == 'POST':
+        user = request.user
         location_name = request.POST.get('name')
         latitude = request.POST.get('lat')
         longitude = request.POST.get('lng')
@@ -72,10 +81,6 @@ def load_places(request):
         except Exception as e:
             print e
             return JsonResponse({"error": e}, safe=False)
-
-
-def location(request, location_id):
-    return render(request, 'main.html', {'id': location_id})
 
 
 class LocationList(generics.ListCreateAPIView):

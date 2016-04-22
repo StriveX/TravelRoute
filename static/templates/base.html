@@ -17,6 +17,8 @@
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'build/css/bootstrap.min.css' %}" />
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 {#        <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">#}
             
@@ -34,7 +36,7 @@
     <body>
 
         <!-- Static navbar -->
-        <nav class="navbar navbar-inverse navbar-static-top">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -64,41 +66,32 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+
+                    {% if user.username %}
                         <li>
-                            <form class="navbar-form navbar-left" role="search">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="search-place-input" placeholder="Find a place">
-                                </div>
-                                <input type="button" class="btn btn-default" value="Search" onclick="searchPlace()"/>
-                            </form>
+                            <li><a href="#about">My List</a></li>
                         </li>
-{#                        <li class="active"><a href="./">New Route<span class="sr-only">(current)</span></a></li>#}
+                    {% else %}
                         <li>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle navbar-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Route <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#" id="save_route">New Route</a></li>
-                                </ul>
-                            </div>
+                            <li><a href="/accounts/login">Log in</a></li>
                         </li>
+                    {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
 
-
-        <div class="container">
-
         {% block content %}
         {% endblock %}
 
-        </div> <!-- /container -->
+{#        <footer class="footer">#}
+{#            <div class="container">#}
+{#                <p class="text-muted">Xi Zhu's project.</p>#}
+{#            </div>#}
+{#        </footer>#}
+{#        <div class="navbar navbar-default navbar-fixed-bottom" role="navigation"></div>#}
+
+
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
@@ -109,7 +102,7 @@
         <script src="{% static 'build/js/react.min.js' %}"></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 {#        <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>#}
-
+        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCAncn5gnnt5DSJfAd2D4NjO5o3BOS2K-w&libraries=places"></script>
         {% block javascript %}
         {% endblock %}
     </body>

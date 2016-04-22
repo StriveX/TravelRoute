@@ -41,12 +41,10 @@ function loadPlaces() {
                 });
                 markers.push(marker);
 
-                google.maps.event.addListener(unselected_marker, "click", function (e) {
-                    unselected_marker.setIcon('Marker_Filled_balck.png');
-                    var selected_marker = addMark(val.id, position, 'Marker_Filled_balck.png', selected_markers);
-                        selected_marker.setMap(null);
-                    });
+                google.maps.event.addListener(markers, "click", function (e) {
+
                 });
+            });
         },
         error : function(xhr,errmsg,err) {
         }
@@ -55,16 +53,23 @@ function loadPlaces() {
 
 function showGoogleMaps() {
 
+    var input = document.getElementById('search-box');
+    var searchBox = new google.maps.places.SearchBox(input);
+
+
     var mapOptions = {
         zoom: 12, // initialize zoom level - the max value is 21
         streetViewControl: false,
         scaleControl: true, // allow users to zoom the Google Map
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        center: {lat: 37.7749295, lng: -122.41941550000001}
+        center: {lat: 37.7749295, lng: -122.41941550000001},
+        mapTypeControl: false,
+        scrollwheel: false
     };
 
     map = new google.maps.Map(document.getElementById('background_map'),
         mapOptions);
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -96,6 +101,9 @@ function showGoogleMaps() {
                 selected_markers.push(selected_marker);
             }
         }
+    });
+    map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
     });
     google.maps.event.addListener(map, 'idle', loadPlaces);
 }

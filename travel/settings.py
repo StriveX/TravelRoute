@@ -150,4 +150,5 @@ STATICFILES_DIRS = [
 
 # User account system
 
-LOGIN_REDIRECT_URL = '/location/'
+LOGIN_REDIRECT_URL = '/location/dashboard'
+LOGIN_URL='/accounts/login/'
