@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'accounts',
     'location',
     'blog',
 ]
@@ -151,4 +152,4 @@ STATICFILES_DIRS = [
 # User account system
 
 LOGIN_REDIRECT_URL = '/location/dashboard'
-LOGIN_URL='/accounts/login/'
+LOGIN_URL = '/accounts/login/'

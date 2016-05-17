@@ -10,6 +10,8 @@ from .models import *
 from .serializers import LocationSerializer
 from .utils import calculate_route_wrapper
 
+from django.contrib.auth.decorators import login_required
+
 from mongoengine import *
 
 connect("travel")
@@ -30,6 +32,7 @@ def dashboard(request):
 # Location
 
 
+@login_required
 def create_location(request):
     if request.method == 'POST':
         user = request.user
@@ -47,6 +50,7 @@ def create_location(request):
         return new_location
 
 
+@login_required
 def create_place(request):
     if request.method == 'POST':
         try:
@@ -67,6 +71,7 @@ def create_place(request):
             return JsonResponse({"error": "Create new place failed."})
 
 
+@login_required
 def load_places(request):
     if request.method == 'GET':
         try:
@@ -108,6 +113,7 @@ class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
 # Route
 
 
+@login_required
 def create_route(request):
     if request.method == 'POST':
         route_name = request.POST.get('name')
@@ -124,6 +130,7 @@ def create_route(request):
         new_route.save()
 
 
+@login_required
 def load_route(request):
     route_id = request.route_id
     route = Route._object(_id=route_id)

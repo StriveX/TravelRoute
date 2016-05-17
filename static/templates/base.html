@@ -19,6 +19,8 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
+        <link rel="stylesheet" type="text/css" href="{% static 'build/css/customize/base.css' %}">
+
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 {#        <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">#}
             
@@ -69,7 +71,8 @@
 
                     {% if user.username %}
                         <li>
-                            <li><a href="#about">My List</a></li>
+                            <li><a href="#">My List</a></li>
+                            <li><a href="/accounts/logout">Log out</a></li>
                         </li>
                     {% else %}
                         <li>
